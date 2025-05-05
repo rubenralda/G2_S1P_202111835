@@ -1,0 +1,28 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "Modulo para dibujar numeros y para el analisis de imagenes con rostros y sus expresiones",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rubenralda/G2_S1P_202111835.git"
+  },
+  "author": "rubenralda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rubenralda/G2_S1P_202111835/issues"
+  },
+  "homepage": "https://github.com/rubenralda/G2_S1P_202111835#readme",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "canvas": "^3.1.0",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7"
+  }
+}
