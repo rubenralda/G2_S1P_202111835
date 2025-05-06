@@ -9,7 +9,7 @@ const IMAGE_HEIGHT = 28;
 async function preprocessImage(imagePath) {
   const imageBuffer = fs.readFileSync(imagePath);
     return tf.node.decodeImage(imageBuffer, 1) // escala de grises
-      .resizeNearestNeighbor([size, size])
+      .resizeNearestNeighbor([IMAGE_WIDTH, IMAGE_HEIGHT])
       .toFloat()
       .div(255.0)
       .expandDims(); // [1, size, size, 1]

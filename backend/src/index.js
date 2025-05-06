@@ -3,6 +3,8 @@ const predict = require('./prediccionNumerica/predict.js');
 const express = require('express');
 const morgan = require('morgan')
 const app = express();
+const multer = require('multer')
+const fs = require('fs');
 
 app.set('port', process.env.PORT || 3000)
 
@@ -17,7 +19,6 @@ app.get('/train/prediccionNumerico', async (req, res) => {
     })
 })
 
-// Configurar almacenamiento
 const storage = multer.diskStorage({
   destination: './uploads',
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
@@ -31,7 +32,7 @@ app.post('/prediccionNumerico', upload.single('image'), async (req, res) => {
   
       res.json(result);
     } catch (error) {
-      console.error('Error en /predict-number:', error);
+      console.error('Error en /prediccionNumerico:', error);
       res.status(500).json({ error: 'Error al procesar la imagen.' });
     }
   });

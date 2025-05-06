@@ -1,34 +1,23 @@
 const tf = require('@tensorflow/tfjs-node');
 const fs = require('fs');
 const path = require('path');
-const { createCanvas, loadImage } = require('canvas');
 
 const IMAGE_WIDTH = 28;
 const IMAGE_HEIGHT = 28;
 const NUM_CLASSES = 10;
 
 async function loadImagesFromDir(dirPath, label) {
-  const files = fs.readdirSync(dirPath);
   const images = [];
+  const files = fs.readdirSync(dirPath);
 
   for (let file of files) {
-    /* const imgPath = path.join(dirPath, file);
-    const img = await loadImage(imgPath);
-    const canvas = createCanvas(IMAGE_WIDTH, IMAGE_HEIGHT);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
-    const imageData = ctx.getImageData(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
-
-    const pixels = tf.browser.fromPixels(imageData, 1).toFloat().div(255); */
-    const imageBuffer = fs.readFileSync(path.join(classPath, file));
-          const imageTensor = tf.node.decodeImage(imageBuffer, 1)
-            .resizeNearestNeighbor([IMAGE_WIDTH, IMAGE_HEIGHT])
-            .toFloat()
-            .div(255.0)
-            .expandDims();
+    const imageBuffer = fs.readFileSync(path.join(dirPath, file));
+    const imageTensor = tf.node.decodeImage(imageBuffer, 1)
+      .resizeNearestNeighbor([IMAGE_WIDTH, IMAGE_HEIGHT])
+      .toFloat()
+      .div(255.0)
     images.push({ tensor: imageTensor, label });
   }
-
   return images;
 }
 
@@ -61,30 +50,33 @@ function createModel() {
     activation: 'relu'
   }));
 
+  
   model.add(tf.layers.maxPooling2d({ poolSize: 2 }));
   model.add(tf.layers.conv2d({
+    inputShape: [28, 28, 1],
     kernelSize: 3,
-    filters: 64,
+    filters: 16,
     activation: 'relu'
   }));
   model.add(tf.layers.maxPooling2d({ poolSize: 2 }));
   model.add(tf.layers.flatten());
-  model.add(tf.layers.dense({ units: 128, activation: 'relu' }));
+  model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
   model.add(tf.layers.dense({ units: NUM_CLASSES, activation: 'softmax' }));
-
+  
   model.compile({
     optimizer: tf.train.adam(),
     loss: 'categoricalCrossentropy',
     metrics: ['accuracy']
   });
-
+  
   return model;
 }
 
 async function main() {
   const datasetPath = path.join(__dirname, 'data');
   const { xs, ys } = await loadDataset(datasetPath);
-
+  
+  console.log(xs, ys)
   const model = createModel();
   await model.fit(xs, ys, {
     epochs: 10,
