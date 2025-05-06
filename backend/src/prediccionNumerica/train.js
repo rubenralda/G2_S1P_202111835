@@ -12,15 +12,21 @@ async function loadImagesFromDir(dirPath, label) {
   const images = [];
 
   for (let file of files) {
-    const imgPath = path.join(dirPath, file);
+    /* const imgPath = path.join(dirPath, file);
     const img = await loadImage(imgPath);
     const canvas = createCanvas(IMAGE_WIDTH, IMAGE_HEIGHT);
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
     const imageData = ctx.getImageData(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 
-    const pixels = tf.browser.fromPixels(imageData, 1).toFloat().div(255);
-    images.push({ tensor: pixels, label });
+    const pixels = tf.browser.fromPixels(imageData, 1).toFloat().div(255); */
+    const imageBuffer = fs.readFileSync(path.join(classPath, file));
+          const imageTensor = tf.node.decodeImage(imageBuffer, 1)
+            .resizeNearestNeighbor([IMAGE_WIDTH, IMAGE_HEIGHT])
+            .toFloat()
+            .div(255.0)
+            .expandDims();
+    images.push({ tensor: imageTensor, label });
   }
 
   return images;
@@ -91,4 +97,4 @@ async function main() {
   console.log('Modelo entrenado y guardado en ./model');
 }
 
-main();
+module.exports = main
